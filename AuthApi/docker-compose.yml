@@ -1,42 +1,66 @@
 version: "3.9"
-
 services:
 api:
+
 build:
+
   context: ./AuthApi
+
   dockerfile: Dockerfile
+
 ports:
+
   - "8080:80"
 depends_on:
-  - db
+
+ - db
 environment:
-  - ASPNETCORE_ENVIRONMENT=Development
-  - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
-  - POSTGRES_DB=${DB_NAME}
+
+ - ASPNETCORE_ENVIRONMENT=Development
+
+ - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
+
+ - POSTGRES_DB=${DB_NAME}
+
+ - POSTGRES_USER=${DB_USER}
+
+ - POSTGRES_PASSWORD=${DB_PASSWORD}
+db:
+
+image: postgres:16-alpine
+
+container_name: santa_postgres
+
+environment:
+
   - POSTGRES_USER=${DB_USER}
+
   - POSTGRES_PASSWORD=${DB_PASSWORD}
 
-db:
-image: postgres:16-alpine
-container_name: santa_postgres
-environment:
-  POSTGRES_USER: ${DB_USER}
-  POSTGRES_PASSWORD: ${DB_PASSWORD}
-  POSTGRES_DB: ${DB_NAME}
-  PGDATA: /var/lib/postgresql/data/pgdata
+  - POSTGRES_DB=${DB_NAME}
 
-# Не публикуем порт БД наружу
+  - PGDATA=/var/lib/postgresql/data/pgdata
+
+# Не публикуйте порт БД наружу
+
 # ports:
+
 #   - "5432:5432"
 
 volumes:
-  - pg_data:/var/lib/postgresql/data
-healthcheck:
-  test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-  interval: 10s
-  timeout: 5s
-  retries: 5
-  restart: unless-stopped
 
+  - pg_data:/var/lib/postgresql/data
+
+healthcheck:
+
+  test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+
+  interval: 10s
+
+  timeout: 5s
+
+  retries: 5
+
+restart: unless-stopped
 volumes:
 pg_data:
