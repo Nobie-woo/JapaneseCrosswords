@@ -11,20 +11,22 @@ build:
 ports:
 
   - "8080:80"
+
 depends_on:
 
- - db
+  - db
+
 environment:
 
- - ASPNETCORE_ENVIRONMENT=Development
+  ASPNETCORE_ENVIRONMENT: Development
 
- - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
+  CONNECTION_STRING: "Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require"
 
- - POSTGRES_DB=${DB_NAME}
+  POSTGRES_DB: ${DB_NAME}
 
- - POSTGRES_USER=${DB_USER}
+  POSTGRES_USER: ${DB_USER}
 
- - POSTGRES_PASSWORD=${DB_PASSWORD}
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
 db:
 
 image: postgres:16-alpine
@@ -33,13 +35,13 @@ container_name: santa_postgres
 
 environment:
 
-  - POSTGRES_USER=${DB_USER}
+  POSTGRES_USER: ${DB_USER}
 
-  - POSTGRES_PASSWORD=${DB_PASSWORD}
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
 
-  - POSTGRES_DB=${DB_NAME}
+  POSTGRES_DB: ${DB_NAME}
 
-  - PGDATA=/var/lib/postgresql/data/pgdata
+  PGDATA: /var/lib/postgresql/data/pgdata
 
 # Не публикуйте порт БД наружу
 
