@@ -1,65 +1,67 @@
 services:
-  api:
+api:
 
-    build:
+ build:
 
-     context: ./AuthApi
+   context: ./AuthApi
 
-     dockerfile: Dockerfile
+   dockerfile: Dockerfile
 
-    ports:
+ ports:
 
-     - "8080:80"
+   - "8080:80"
 
-    depends_on:
+ depends_on:
 
-      - db
+  - db
 
-    environment:
+ environment:
 
-      ASPNETCORE_ENVIRONMENT: Development
+  - ASPNETCORE_ENVIRONMENT=Development
 
-      CONNECTION_STRING: "Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require"
+  - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
 
-      POSTGRES_DB: ${DB_NAME}
+  - POSTGRES_DB=${DB_NAME}
 
-      POSTGRES_USER: ${DB_USER}
+  - POSTGRES_USER=${DB_USER}
 
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-  db:
+  - POSTGRES_PASSWORD=${DB_PASSWORD}
+db:
 
-    image: postgres:16-alpine
+ image: postgres:16-alpine
 
-    container_name: santa_postgres
+ container_name: santa_postgres
 
-    environment:
+ environment:
 
-      POSTGRES_USER: ${DB_USER}
+  - POSTGRES_USER=${DB_USER}
 
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+  - POSTGRES_PASSWORD=${DB_PASSWORD}
 
-      POSTGRES_DB: ${DB_NAME}
+  - POSTGRES_DB=${DB_NAME}
 
-      PGDATA: /var/lib/postgresql/data/pgdata
+  - PGDATA=/var/lib/postgresql/data/pgdata
 
-    ports:
+# Не публикуем порт БД наружу
 
-      - "5430:5432"
+# ports:
 
-    volumes:
+#   - "5432:5432"
 
-      - pg_data:/var/lib/postgresql/data
+ volumes:
 
-    healthcheck:
+  - pg_data:/var/lib/postgresql/data
 
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+ healthcheck:
 
-      interval: 10s
+  test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
 
-      timeout: 5s
+  interval: 10s
 
-      retries: 5
+  timeout: 5s
 
-    restart: unless-stopped
-  volumes:
-  pg_data:
+  retries: 5
+
+restart: unless-stopped
+volumes:
+pg_data:
