@@ -1,38 +1,36 @@
 services:
-db:
+  db:
 
-image: postgres:16-alpine
+    image: postgres:16-alpine
 
-container_name: santa_postgres
+    container_name: santa_postgres
 
-environment:
+    environment:
 
-  - POSTGRES_USER=${DB_USER}
+      - POSTGRES_USER=${DB_USER}
 
-  - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
 
-  - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_DB=${DB_NAME}
 
-  - PGDATA=/var/lib/postgresql/data/pgdata
+      - PGDATA=/var/lib/postgresql/data/pgdata
 
-# Не публикуйте порт БД наружу
+    ports:
 
-# ports:
+      - "5432:5432"
 
-#   - "5432:5432"
+    volumes:
 
-volumes:
+      - pg_data:/var/lib/postgresql/data
 
-  - pg_data:/var/lib/postgresql/data
+    healthcheck:
 
-healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
 
-  test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
 
-  interval: 10s
+      timeout: 5s
 
-  timeout: 5s
+      retries: 5
 
-  retries: 5
-
-restart: unless-stopped
+    restart: unless-stopped

@@ -1,27 +1,27 @@
 services:
-api:
+  api:
 
-build:
+    build:
 
-  context: ./AuthApi
+      context: ./AuthApi
 
-  dockerfile: Dockerfile
+      dockerfile: Dockerfile
 
-ports:
+    ports:
 
-  - "8080:80"
+      - "8080:80"
 
-depends_on:
+    depends_on:
 
-  - db
-environment:
+      - db
+    environment:
 
- - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
 
- - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
+      - CONNECTION_STRING=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};SslMode=Require
 
- - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_DB=${DB_NAME}
 
- - POSTGRES_USER=${DB_USER}
+      - POSTGRES_USER=${DB_USER}
 
- - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
