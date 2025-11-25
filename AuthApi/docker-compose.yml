@@ -42,11 +42,11 @@ db:
 
   - PGDATA=/var/lib/postgresql/data/pgdata
 
-# Не публикуем порт БД наружу
+  # Не публикуем порт БД наружу
 
-# ports:
+  # ports:
 
-#   - "5432:5432"
+  #   - "5432:5432"
 
  volumes:
 
