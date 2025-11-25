@@ -7,7 +7,7 @@ COPY ["AuthApi.csproj", "AuthApi/"]
 RUN dotnet restore "AuthApi/AuthApi.csproj"
 COPY . .
 WORKDIR "/src/AuthApi"
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "AuthApi/AuthApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
