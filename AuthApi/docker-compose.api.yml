@@ -3,7 +3,7 @@ services:
 
     build:
 
-      context: ./AuthApi
+      context: .
 
       dockerfile: Dockerfile
 
