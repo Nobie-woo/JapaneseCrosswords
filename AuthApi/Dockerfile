@@ -3,11 +3,11 @@ WORKDIR /app
 EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["AuthApi.csproj", "AuthApi/"]
-RUN dotnet restore "AuthApi/AuthApi.csproj"
+COPY ["AuthApi.csproj", "."]
+RUN dotnet restore "AuthApi.csproj"
 COPY . .
-WORKDIR "/src/AuthApi"
-RUN dotnet publish "AuthApi/AuthApi.csproj" -c Release -o /app/publish
+WORKDIR "/src"
+RUN dotnet publish "AuthApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
