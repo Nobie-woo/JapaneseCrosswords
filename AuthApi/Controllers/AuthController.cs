@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using BCrypt.Net;
 using AuthApi.Data;
 using AuthApi.Models;
 using AuthApi.DTOs;
@@ -15,7 +15,6 @@ namespace AuthApi.Controllers
 public class AuthController : ControllerBase
 {
 private readonly AppDbContext _db;
-private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 public AuthController(AppDbContext db){
   _db = db;
 }
@@ -43,7 +42,7 @@ public async Task<IActionResult> Register([FromBody] RegisterRequest req){
   }
 
   var user = new User { Username = req.Username, CreatedAt = DateTime.UtcNow };
-  user.PasswordHash = _passwordHasher.HashPassword(user, req.Password);
+  user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
   _db.Users.Add(user);
   await _db.SaveChangesAsync();
   var successData = new RegisterResponse { UserId = user.Id, Success = true, Message = "Пользователь зарегистрирован" };
@@ -74,9 +73,9 @@ public async Task<IActionResult> Login([FromBody] LoginRequest req){
     return Unauthorized(resp);
   }
 
-  var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, req.Password);
+  bool isValid = BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash);
 
-  if (result == PasswordVerificationResult.Failed){
+  if (!isValid){
     var resp = new ApiResponse<LoginResponse>{
       Succeeded = false,
       Message = "Неверные учетные данные",
